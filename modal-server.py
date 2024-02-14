@@ -26,10 +26,6 @@ stub = modal.Stub("image-describe-service")
 )
 @modal.web_endpoint(method="POST")
 def _describe(request: Dict):
-    try:
-        return worker.work_on_file(
-            worker.load_model(), request["imageUrl"], request["prompt"]
-        )
-    except Exception as e:
-        logging.error(e)
-        return None
+    return worker.work_on_file(
+        worker.load_model(), request["imageUrl"], request["prompt"]
+    )
