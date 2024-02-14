@@ -96,6 +96,8 @@ def _caption_image(model, tokenizer, image_processor, image_file, prompt):
     outputs = tokenizer.decode(output_ids[0, input_ids.shape[1] :]).strip()
     conv.messages[-1][-1] = outputs
     output = outputs.rsplit("</s>", 1)[0]
+    if not output:
+        raise ValueError("Model returned empty output")
     return output
 
 
