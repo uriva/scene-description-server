@@ -7,7 +7,10 @@ from src import worker
 stub = modal.Stub("image-describe-service")
 
 
-@stub.function(
+model = None
+
+
+@stub.cls(
     image=(
         modal.Image.debian_slim()
         .apt_install("git")
@@ -23,8 +26,11 @@ stub = modal.Stub("image-describe-service")
     ),
     gpu="any",
 )
-@modal.web_endpoint(method="POST")
-def _describe(request: Dict):
-    return worker.work_on_file(
-        worker.load_model(), request["imageUrl"], request["prompt"]
-    )
+class Model:
+    @modal.enter()
+    def load_model(self):
+        self._model = worker.load_model()
+
+    @modal.web_endpoint(method="POST")
+    def predict(self, request: Dict):
+        return worker.work_on_file(self._model, request["imageUrl"], request["prompt"])
