@@ -7,9 +7,6 @@ from src import worker
 stub = modal.Stub("image-describe-service")
 
 
-model = None
-
-
 @stub.cls(
     image=(
         modal.Image.debian_slim()
