@@ -101,7 +101,6 @@ def _caption_image(model, tokenizer, image_processor, image_file, prompt):
     return output
 
 
-@gamla.throttle(1)
 @gamla.timeit
 def work_on_file(model, image_path: str, prompt: str):
     logging.info(image_path)
