@@ -1,14 +1,10 @@
-import logging
 from io import BytesIO
 
 import gamla
 import requests
 import torch
 from PIL import Image
-from transformers import (
-    AutoTokenizer,
-    BitsAndBytesConfig,
-)
+from transformers import AutoTokenizer, BitsAndBytesConfig
 
 
 def load_model():
@@ -38,7 +34,8 @@ def load_model():
     )
 
 
-def _caption_image(model, tokenizer, image_processor, image_file, prompt):
+@gamla.timeit
+def caption_image(model, tokenizer, image_processor, image_file, prompt) -> str:
     from llava.constants import (
         DEFAULT_IM_END_TOKEN,
         DEFAULT_IM_START_TOKEN,
@@ -46,10 +43,7 @@ def _caption_image(model, tokenizer, image_processor, image_file, prompt):
         IMAGE_TOKEN_INDEX,
     )
     from llava.conversation import SeparatorStyle, conv_templates
-    from llava.mm_utils import (
-        KeywordsStoppingCriteria,
-        tokenizer_image_token,
-    )
+    from llava.mm_utils import KeywordsStoppingCriteria, tokenizer_image_token
     from llava.utils import disable_torch_init
 
     if image_file.startswith("http") or image_file.startswith("https"):
@@ -99,13 +93,3 @@ def _caption_image(model, tokenizer, image_processor, image_file, prompt):
     if not output:
         raise ValueError("Model returned empty output")
     return output
-
-
-@gamla.timeit
-def work_on_file(model, image_path: str, prompt: str):
-    logging.info(image_path)
-    try:
-        return _caption_image(*model, image_path, prompt)
-    except Exception as e:
-        logging.error(e)
-        return None

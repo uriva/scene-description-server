@@ -30,4 +30,6 @@ class Model:
 
     @modal.web_endpoint(method="POST")
     def predict(self, request: Dict):
-        return worker.work_on_file(self._model, request["imageUrl"], request["prompt"])
+        return worker.caption_image(
+            *self._model, request["imageUrl"], request["prompt"]
+        )
