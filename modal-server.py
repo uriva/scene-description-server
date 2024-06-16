@@ -4,10 +4,10 @@ import modal
 
 from src import worker
 
-stub = modal.Stub("image-describe-service")
+app = modal.App("image-describe-service")
 
 
-@stub.cls(
+@app.cls(
     image=(
         modal.Image.debian_slim()
         .apt_install("git")
